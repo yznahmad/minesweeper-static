@@ -1,129 +1,193 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const boardSize = 10;
-    const mineCount = 15;
-    let board = [];
-    let revealedCount = 0;
-    const gameBoard = document.getElementById('gameBoard');
-    const resetButton = document.getElementById('resetButton');
-
-    resetButton.addEventListener('click', resetGame);
-
-    function resetGame() {
-        board = [];
-        revealedCount = 0;
-        gameBoard.innerHTML = '';
-        initializeBoard();
-        placeMines();
-        calculateNumbers();
+class Minesweeper {
+    constructor(size = 10, mines = 10) {
+        this.size = size;
+        this.mines = mines;
+        this.grid = [];
+        this.gameOver = false;
+        this.timer = 0;
+        this.timerInterval = null;
+        this.init();
     }
 
-    function initializeBoard() {
-        for (let i = 0; i < boardSize; i++) {
-            const row = [];
-            for (let j = 0; j < boardSize; j++) {
-                const cell = document.createElement('div');
-                cell.classList.add('cell');
-                cell.dataset.row = i;
-                cell.dataset.col = j;
-                cell.addEventListener('click', handleCellClick);
-                cell.addEventListener('contextmenu', handleCellRightClick);
-                gameBoard.appendChild(cell);
-                row.push({ element: cell, mine: false, number: 0, revealed: false, flagged: false });
-            }
-            board.push(row);
-        }
+    init() {
+        this.createGrid();
+        this.placeMines();
+        this.calculateNumbers();
+        this.render();
+        this.startTimer();
+
+        document.getElementById('reset').addEventListener('click', () => this.reset());
     }
 
-    function placeMines() {
+    createGrid() {
+        this.grid = Array(this.size).fill().map(() => 
+            Array(this.size).fill().map(() => ({
+                isMine: false,
+                isRevealed: false,
+                isFlagged: false,
+                neighborMines: 0
+            }))
+        );
+    }
+
+    placeMines() {
         let minesPlaced = 0;
-        while (minesPlaced < mineCount) {
-            const row = Math.floor(Math.random() * boardSize);
-            const col = Math.floor(Math.random() * boardSize);
-            if (!board[row][col].mine) {
-                board[row][col].mine = true;
+        while (minesPlaced < this.mines) {
+            const x = Math.floor(Math.random() * this.size);
+            const y = Math.floor(Math.random() * this.size);
+            if (!this.grid[y][x].isMine) {
+                this.grid[y][x].isMine = true;
                 minesPlaced++;
             }
         }
     }
 
-    function calculateNumbers() {
-        for (let i = 0; i < boardSize; i++) {
-            for (let j = 0; j < boardSize; j++) {
-                if (board[i][j].mine) continue;
-                let count = 0;
-                for (let x = -1; x <= 1; x++) {
-                    for (let y = -1; y <= 1; y++) {
-                        const newRow = i + x;
-                        const newCol = j + y;
-                        if (newRow >= 0 && newRow < boardSize && newCol >= 0 && newCol < boardSize && board[newRow][newCol].mine) {
-                            count++;
-                        }
-                    }
+    calculateNumbers() {
+        for (let y = 0; y < this.size; y++) {
+            for (let x = 0; x < this.size; x++) {
+                if (!this.grid[y][x].isMine) {
+                    this.grid[y][x].neighborMines = this.countNeighborMines(x, y);
                 }
-                board[i][j].number = count;
             }
         }
     }
 
-    function handleCellClick(event) {
-        const row = parseInt(event.target.dataset.row);
-        const col = parseInt(event.target.dataset.col);
-        if (board[row][col].revealed || board[row][col].flagged) return;
-        revealCell(row, col);
+    countNeighborMines(x, y) {
+        let count = 0;
+        for (let dy = -1; dy <= 1; dy++) {
+            for (let dx = -1; dx <= 1; dx++) {
+                const newY = y + dy;
+                const newX = x + dx;
+                if (newY >= 0 && newY < this.size && newX >= 0 && newX < this.size) {
+                    if (this.grid[newY][newX].isMine) count++;
+                }
+            }
+        }
+        return count;
     }
 
-    function handleCellRightClick(event) {
-        event.preventDefault();
-        const row = parseInt(event.target.dataset.row);
-        const col = parseInt(event.target.dataset.col);
-        if (board[row][col].revealed) return;
-        toggleFlag(row, col);
+    render() {
+        const gridElement = document.getElementById('grid');
+        gridElement.innerHTML = '';
+        
+        for (let y = 0; y < this.size; y++) {
+            for (let x = 0; x < this.size; x++) {
+                const cell = document.createElement('div');
+                cell.className = 'cell';
+                
+                if (this.grid[y][x].isRevealed) {
+                    cell.classList.add('revealed');
+                    if (this.grid[y][x].isMine) {
+                        cell.classList.add('mine');
+                        cell.textContent = '💣';
+                    } else if (this.grid[y][x].neighborMines > 0) {
+                        cell.textContent = this.grid[y][x].neighborMines;
+                    }
+                } else if (this.grid[y][x].isFlagged) {
+                    cell.classList.add('flagged');
+                    cell.textContent = '🚩';
+                }
+
+                cell.addEventListener('click', () => this.handleClick(x, y));
+                cell.addEventListener('contextmenu', (e) => {
+                    e.preventDefault();
+                    this.handleRightClick(x, y);
+                });
+
+                gridElement.appendChild(cell);
+            }
+        }
     }
 
-    function revealCell(row, col) {
-        if (board[row][col].revealed || board[row][col].flagged) return;
-        board[row][col].revealed = true;
-        revealedCount++;
-        board[row][col].element.classList.add('revealed');
-        if (board[row][col].mine) {
-            board[row][col].element.classList.add('mine');
-            revealAllMines();
+    handleClick(x, y) {
+        if (this.gameOver || this.grid[y][x].isFlagged) return;
+
+        if (this.grid[y][x].isMine) {
+            this.gameOver = true;
+            this.revealAll();
+            clearInterval(this.timerInterval);
             alert('Game Over!');
-            resetGame();
-        } else if (board[row][col].number === 0) {
-            for (let x = -1; x <= 1; x++) {
-                for (let y = -1; y <= 1; y++) {
-                    const newRow = row + x;
-                    const newCol = col + y;
-                    if (newRow >= 0 && newRow < boardSize && newCol >= 0 && newCol < boardSize) {
-                        revealCell(newRow, newCol);
-                    }
-                }
-            }
         } else {
-            board[row][col].element.textContent = board[row][col].number;
+            this.reveal(x, y);
+            if (this.checkWin()) {
+                this.gameOver = true;
+                clearInterval(this.timerInterval);
+                this.celebrateWin();
+            }
         }
-        if (revealedCount === (boardSize * boardSize) - mineCount) {
-            alert('You Win!');
-            resetGame();
-        }
+        this.render();
     }
 
-    function toggleFlag(row, col) {
-        if (board[row][col].revealed) return;
-        board[row][col].flagged = !board[row][col].flagged;
-        board[row][col].element.classList.toggle('flag');
+    handleRightClick(x, y) {
+        if (this.gameOver || this.grid[y][x].isRevealed) return;
+        this.grid[y][x].isFlagged = !this.grid[y][x].isFlagged;
+        this.render();
     }
 
-    function revealAllMines() {
-        for (let i = 0; i < boardSize; i++) {
-            for (let j = 0; j < boardSize; j++) {
-                if (board[i][j].mine) {
-                    board[i][j].element.classList.add('revealed', 'mine');
+    reveal(x, y) {
+        if (x < 0 || x >= this.size || y < 0 || y >= this.size) return;
+        if (this.grid[y][x].isRevealed || this.grid[y][x].isFlagged) return;
+
+        this.grid[y][x].isRevealed = true;
+
+        if (this.grid[y][x].neighborMines === 0) {
+            for (let dy = -1; dy <= 1; dy++) {
+                for (let dx = -1; dx <= 1; dx++) {
+                    this.reveal(x + dx, y + dy);
                 }
             }
         }
     }
 
-    resetGame();
-});
+    revealAll() {
+        for (let y = 0; y < this.size; y++) {
+            for (let x = 0; x < this.size; x++) {
+                this.grid[y][x].isRevealed = true;
+            }
+        }
+    }
+
+    checkWin() {
+        for (let y = 0; y < this.size; y++) {
+            for (let x = 0; x < this.size; x++) {
+                if (!this.grid[y][x].isMine && !this.grid[y][x].isRevealed) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    celebrateWin() {
+        confetti({
+            particleCount: 100,
+            spread: 70,
+            origin: { y: 0.6 }
+        });
+        alert('Congratulations! You won!');
+    }
+
+    startTimer() {
+        this.timer = 0;
+        clearInterval(this.timerInterval);
+        this.timerInterval = setInterval(() => {
+            this.timer++;
+            const minutes = Math.floor(this.timer / 60);
+            const seconds = this.timer % 60;
+            const formattedTime = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            document.getElementById('time').textContent = formattedTime;
+        }, 1000);
+    }
+
+    reset() {
+        this.gameOver = false;
+        this.createGrid();
+        this.placeMines();
+        this.calculateNumbers();
+        this.render();
+        this.startTimer();
+    }
+}
+
+// Start the game
+new Minesweeper();
