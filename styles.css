@@ -1,82 +1,115 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 body {
+    background: #1a1b26;
     font-family: Arial, sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    margin: 0;
-    background-color: #f0f0f0;
+    min-height: 100vh;
+    color: #a9b1d6;
 }
 
 .container {
-    text-align: center;
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background: #24283b;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    border: 1px solid #414868;
 }
 
-h1 {
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 20px;
 }
 
-#resetButton {
-    padding: 10px 20px;
-    font-size: 16px;
-    margin-bottom: 20px;
-    cursor: pointer;
+.timer {
+    font-size: 1.2rem;
+    color: #7aa2f7;
+    text-shadow: 0 0 10px rgba(122, 162, 247, 0.3);
+}
+
+#reset {
+    background: #7aa2f7;
+    color: #1a1b26;
     border: none;
-    border-radius: 5px;
-    background-color: #007bff;
-    color: #fff;
-    transition: background-color 0.3s;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: bold;
+    box-shadow: 0 4px 12px rgba(122, 162, 247, 0.3);
 }
 
-#resetButton:hover {
-    background-color: #0056b3;
+#reset:hover {
+    background: #89b4ff;
+    transform: translateY(-2px);
 }
 
-#gameBoard {
+.grid {
     display: grid;
-    grid-template-columns: repeat(10, 30px);
-    grid-template-rows: repeat(10, 30px);
-    gap: 1px;
+    grid-template-columns: repeat(10, 32px);
+    gap: 3px;
+    padding: 10px;
+    background: #1a1b26;
+    border-radius: 10px;
 }
 
 .cell {
-    width: 30px;
-    height: 30px;
-    background-color: #ddd;
+    width: 32px;
+    height: 32px;
+    background: #414868;
+    border: none;
     display: flex;
     justify-content: center;
     align-items: center;
+    font-weight: bold;
     cursor: pointer;
-    border: 1px solid #ccc;
-    box-sizing: border-box;
-    transition: background-color 0.3s;
+    transition: all 0.2s ease;
+    border-radius: 4px;
+    color: #c0caf5;
 }
 
-.cell.revealed {
-    background-color: #eee;
+.cell:hover {
+    background: #535d94;
+    transform: scale(1.05);
 }
 
-.cell.mine {
-    background-color: red;
-    color: #fff;
+.revealed {
+    background: #292e42;
 }
 
-.cell.flag {
-    background-color: #ffcccb;
+.mine {
+    background: #f7768e !important;
+    color: #1a1b26;
 }
 
-.cell.flag::before {
-    content: '!';
-    color: red;
-    font-size: 18px;
+.flagged {
+    background: #e0af68;
+    color: #1a1b26;
 }
 
-.cell.revealed.mine::before {
-    content: '💣';
-    color: #fff;
-    font-size: 18px;
+
+.text-center {
+    text-align: center;
 }
+
+.header-title{
+    padding: 10px 5px 20px 5px !important;
+}
+
+/* Number colors */
+.cell[data-number="1"] { color: #7aa2f7; }
+.cell[data-number="2"] { color: #9ece6a; }
+.cell[data-number="3"] { color: #f7768e; }
+.cell[data-number="4"] { color: #bb9af7; }
+.cell[data-number="5"] { color: #e0af68; }
+.cell[data-number="6"] { color: #7dcfff; }
+.cell[data-number="7"] { color: #ff9e64; }
+.cell[data-number="8"] { color: #db4b4b; }
