@@ -3,16 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Minesweeper</title>
+        <!-- SEO Meta Tags -->
+        <title>Sleek Minesweeper - Modern Browser Game</title>
+        <meta name="description" content="Play the classic Minesweeper game with a modern, sleek design. Free browser-based game with timer and achievements.">
+        <meta name="keywords" content="minesweeper, browser game, puzzle game, free game, online minesweeper">
+        <meta name="author" content="Yazan Jaradat">
+        
+        <!-- Open Graph / Facebook -->
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="https://mines.yznapps.com/">
+        <meta property="og:title" content="Sleek Minesweeper Game">
+        <meta property="og:description" content="Experience the classic Minesweeper with a modern twist. Free to play!">
+        <meta property="og:image" content="https://mines.yznapps.com/images/img.jpg">
+    
+        <!-- Twitter -->
+        <meta property="twitter:card" content="summary_large_image">
+        <meta property="twitter:url" content="https://mines.yznapps.com/">
+        <meta property="twitter:title" content="Sleek Minesweeper Game">
+        <meta property="twitter:description" content="Experience the classic Minesweeper with a modern twist. Free to play!">
+        <meta property="twitter:image" content="https://mines.yznapps.com/images/img.jpg">
+    
+        <!-- Favicon -->
+        <link rel="icon" type="image/png" href="images/favicon.png">
+        <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    
+        <!-- Canonical URL -->
+        <meta rel="canonical" href="https://mines.yznapps.com/">
+    
+        <!-- Styles -->
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
 </head>
 <body>
     <div class="container">
-        <h1>Minesweeper</h1>
-        <button id="resetButton">Reset</button>
-        <div id="gameBoard"></div>
-        
+        <h2 class="visually-hidden header-title text-center">Sleek Minesweeper</h2>
+        <div class="game-header">
+            <div class="timer">Time: <span id="time">0</span></div>
+            <button id="reset">New Game</button>
+        </div>
+        <div id="grid" class="grid"></div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <script src="script.js"></script>
 </body>
-</html> 
+</html>
