@@ -95,14 +95,26 @@ body {
     color: #1a1b26;
 }
 
-
 .text-center {
     text-align: center;
 }
 
-.header-title{
+.header-title {
     padding: 10px 5px 20px 5px !important;
 }
+
+
+
+    select {
+        background-color: #f2f2f2;
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        width: fit-content;
+        box-sizing: border-box;
+        font-size: 13px;
+    }
+
 
 /* Number colors */
 .cell[data-number="1"] { color: #7aa2f7; }
