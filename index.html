@@ -6,7 +6,7 @@
     <!-- SEO Meta Tags -->
     <title>Sleek Minesweeper - Modern Browser Game</title>
     <meta name="description" content="Play the classic Minesweeper game with a modern, sleek design. Free browser-based game with timer and achievements.">
-    <meta name="keywords" content="minesweeper, browser game, puzzle game, free game, online minesweeper">
+    <meta name="keywords" content="web application minesweeper, html css and js minesweeper,minesweeper, HTML minesweeper, JS minesweeper, minesweeper using ai, browser game, puzzle game, free game, online minesweeper">
     <meta name="author" content="Yazan Jaradat">
     
     <!-- Open Graph / Facebook -->
@@ -27,12 +27,36 @@
     <link rel="icon" type="image/png" href="images/favicon.png">
     <link rel="apple-touch-icon" href="apple-touch-icon.png">
 
+        <!-- JSON-LD Structured Data -->
+        <script type="application/ld+json">
+            {
+              "@context": "https://schema.org",
+              "@type": "WebApplication",
+              "name": "Sleek Minesweeper Game",
+              "description": "Play the classic Minesweeper game with a modern, sleek design",
+              "applicationCategory": "Game",
+              "operatingSystem": "All",
+              "offers": {
+                "@type": "Offer",
+                "price": "0",
+                "priceCurrency": "USD"
+              },
+              "author": {
+                "@type": "Person",
+                "name": "Yazan Jaradat"
+              }
+            }
+            </script>
+
     <!-- Canonical URL -->
     <meta rel="canonical" href="https://mines.yznapps.com/">
     <link rel="stylesheet" href="styles.css">
-    <script defer src="https://umami.yznapps.com/script.js" data-website-id="58fd15d3-aec2-4a59-95c7-885fa8e7060a"></script>
 </head>
 <body>
+    <header>
+        <h1 style="display:none;" class="visually-hidden">Sleek Minesweeper - Online Puzzle Game</h1>
+    </header>
+    <main>
     <div class="container">
         <h2 class="visually-hidden header-title text-center">Sleek Minesweeper</h2>
         <div class="game-header">
@@ -50,6 +74,11 @@
         <div id="grid" class="grid"></div>
         <div class="text-center"> <div class="timer">Time: <span id="time">00:00</span></div> </div>
     </div>
+    <footer>
+        <p style="margin-top: 10px;" class="text-center">© 2023 Sleek Minesweeper by Yazan Jaradat</p>
+    </footer>
+</main>
+
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <script src="script.js"></script>
 </body>
